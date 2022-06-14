@@ -10,7 +10,7 @@ import Foundation
 
 public struct X509
 {
-    enum CertificateVersion : Int
+    public enum CertificateVersion : Int
     {
         case v1 = 0
         case v2 = 1
@@ -58,7 +58,7 @@ public struct X509
         }
     }
     
-    struct Name
+    public struct Name
     {
 //        Implementations of this specification MUST
 //        be prepared to receive the following standard attribute types in
@@ -83,7 +83,7 @@ public struct X509
 //        * pseudonym, and
 //        * generation qualifier (e.g., "Jr.", "3rd", or "IV").
 
-        var relativeDistinguishedName : [OID:Any]
+        public var relativeDistinguishedName : [OID:Any]
 
         init?(asn1sequence : ASN1Sequence)
         {
@@ -103,7 +103,7 @@ public struct X509
         }
     }
     
-    enum Time
+    public enum Time
     {
         case utcTime(String)            // YYMMDDHHMMSSZ
         case generalizedTime(String)    // YYYYMMDDHHMMSSZ
@@ -124,10 +124,10 @@ public struct X509
         }
     }
     
-    struct Validity
+    public struct Validity
     {
-        var notBefore   : Time
-        var notAfter    : Time
+        public var notBefore   : Time
+        public var notAfter    : Time
         init?(asn1sequence : ASN1Sequence)
         {
             guard asn1sequence.objects.count == 2 else { return nil }
@@ -141,7 +141,7 @@ public struct X509
         }
     }
     
-    struct BitString
+    public struct BitString
     {
         var numberOfBits    : Int
         var bits            : [UInt8]
@@ -158,13 +158,13 @@ public struct X509
         var bitString : BitString
     }
     
-    struct AlgorithmIdentifier
+    public struct AlgorithmIdentifier
     {
         private var algorithmOID   : OID
         private var parameters  : Any?
 
-        var algorithm: SignatureAlgorithm
-        var oid: OID {
+        public var algorithm: SignatureAlgorithm
+        public var oid: OID {
             return algorithmOID
         }
         
@@ -235,10 +235,10 @@ public struct X509
         }
     }
     
-    struct SubjectPublicKeyInfo
+    public struct SubjectPublicKeyInfo
     {
-        var algorithm           : AlgorithmIdentifier
-        var subjectPublicKey    : BitString
+        public var algorithm           : AlgorithmIdentifier
+        public var subjectPublicKey    : BitString
         init?(asn1sequence : ASN1Sequence)
         {
             guard asn1sequence.objects.count == 2 else { return nil }
