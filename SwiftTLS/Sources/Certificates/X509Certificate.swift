@@ -261,15 +261,15 @@ public struct X509
     
     public struct TBSCertificate
     {
-        var version                 : CertificateVersion
-        var serialNumber            : BigInt
-        var signature               : AlgorithmIdentifier
-        var issuer                  : Name
-        var validity                : Validity
-        var subject                 : Name
-        var subjectPublicKeyInfo    : SubjectPublicKeyInfo
+        public var version                 : CertificateVersion
+        public var serialNumber            : BigInt
+        public var signature               : AlgorithmIdentifier
+        public var issuer                  : Name
+        public var validity                : Validity
+        public var subject                 : Name
+        public var subjectPublicKeyInfo    : SubjectPublicKeyInfo
     
-        var DEREncodedCertificate   : [UInt8]?
+        public var DEREncodedCertificate   : [UInt8]?
         
         init?(asn1Sequence sequence: ASN1Sequence)
         {
@@ -319,9 +319,9 @@ public struct X509
     
     public struct Certificate
     {
-        var tbsCertificate      : TBSCertificate
-        var signatureAlgorithm  : AlgorithmIdentifier
-        var signatureValue      : BitString
+        public var tbsCertificate      : TBSCertificate
+        public var signatureAlgorithm  : AlgorithmIdentifier
+        public var signatureValue      : BitString
         
         var data: [UInt8]
         
@@ -334,7 +334,7 @@ public struct X509
             return RSA(publicKey: publicKeyInfo.subjectPublicKey.bits)
         }
         
-        var publicKeySigner: Signing? {
+        public var publicKeySigner: Signing? {
             let publicKeyInfo = tbsCertificate.subjectPublicKeyInfo
 
             switch tbsCertificate.subjectPublicKeyInfo.algorithm.oid {
@@ -350,7 +350,7 @@ public struct X509
             }
         }
         
-        var commonName: String? {
+        public var commonName: String? {
             return self.tbsCertificate.subject.relativeDistinguishedName[.commonName] as? String
         }
         
