@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct RSA
+public struct RSA
 {
     enum Error : Swift.Error {
         case maskTooLong
@@ -348,7 +348,7 @@ struct RSA
     }
 }
 
-extension RSA : Signing
+public extension RSA : Signing
 {
     func sign(data: [UInt8]) throws -> [UInt8]
     {
