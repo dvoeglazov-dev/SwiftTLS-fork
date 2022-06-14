@@ -143,8 +143,8 @@ public struct X509
     
     public struct BitString
     {
-        var numberOfBits    : Int
-        var bits            : [UInt8]
+        public var numberOfBits    : Int
+        public var bits            : [UInt8]
         
         init?(bitString: ASN1BitString)
         {
