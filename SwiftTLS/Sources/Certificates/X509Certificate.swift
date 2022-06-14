@@ -259,7 +259,7 @@ public struct X509
         var extnValue   : [UInt8]
     }
     
-    struct TBSCertificate
+    public struct TBSCertificate
     {
         var version                 : CertificateVersion
         var serialNumber            : BigInt
@@ -362,11 +362,11 @@ public struct X509
             self.data = derData
         }
     
-        init?(derData : Data) {
+        public init?(derData : Data) {
             self.init(derData: derData.UInt8Array())
         }
     
-        init?(asn1Sequence certificate: ASN1Sequence)
+        public init?(asn1Sequence certificate: ASN1Sequence)
         {
             guard certificate.objects.count == 3 else { return nil }
             
