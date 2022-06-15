@@ -35,7 +35,7 @@ public struct RSA
     let dQ : BigInt?
     let qInv : BigInt?
     
-    var algorithm: X509.SignatureAlgorithm
+    public var algorithm: X509.SignatureAlgorithm
     
     let reducer: ModularReduction
     
@@ -348,9 +348,9 @@ public struct RSA
     }
 }
 
-public extension RSA : Signing
+extension RSA : Signing
 {
-    func sign(data: [UInt8]) throws -> [UInt8]
+    public func sign(data: [UInt8]) throws -> [UInt8]
     {
         return try BigInt.withContext { _ in
             switch self.algorithm {
@@ -367,7 +367,7 @@ public extension RSA : Signing
         }
     }
     
-    func verify(signature : [UInt8], data : [UInt8]) throws -> Bool
+    public func verify(signature : [UInt8], data : [UInt8]) throws -> Bool
     {
         return try BigInt.withContext { _ in
             switch self.algorithm {
