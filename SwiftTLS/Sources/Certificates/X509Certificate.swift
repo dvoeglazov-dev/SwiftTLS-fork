@@ -122,6 +122,15 @@ public struct X509
                 return nil
             }
         }
+        
+        public var description: String {
+            switch self {
+            case .utcTime(let string):
+                return string
+            case .generalizedTime(let string):
+                return string
+            }
+        }
     }
     
     public struct Validity
@@ -317,7 +326,7 @@ public struct X509
         }
     }
     
-    public struct Certificate
+    public class Certificate
     {
         public var tbsCertificate      : TBSCertificate
         public var signatureAlgorithm  : AlgorithmIdentifier
@@ -354,7 +363,7 @@ public struct X509
             return self.tbsCertificate.subject.relativeDistinguishedName[.commonName] as? String
         }
         
-        init?(derData : [UInt8])
+        convenience init?(derDataSequence derData: [UInt8])
         {
             guard let certificate = ASN1Parser(data: derData).parseObject() as? ASN1Sequence else { return nil }
         
@@ -362,8 +371,8 @@ public struct X509
             self.data = derData
         }
     
-        public init?(derData : Data) {
-            self.init(derData: derData.UInt8Array())
+        public convenience init?(derData : Data) {
+            self.init(derDataSequence: derData.UInt8Array())
         }
     
         public init?(asn1Sequence certificate: ASN1Sequence)
@@ -384,7 +393,7 @@ public struct X509
             self.data = []
         }
         
-        init?(PEMFile file: String)
+        convenience init?(PEMFile file: String)
         {
             for (section, object) in ASN1Parser.sectionsFromPEMFile(file) {
                 switch section

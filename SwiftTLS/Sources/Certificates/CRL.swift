@@ -10,21 +10,21 @@ import UIKit
 
 extension X509 {
     /// Certificate Revocation List
-    public struct CRL {
+    public class CRL {
         public var signatureAlgorithm: AlgorithmIdentifier
         public var signatureValue: BitString
         public var tbsCertList: TBSCertList
         
         var data: [UInt8]
         
-        init?(derData : [UInt8])
+        convenience init?(derData : [UInt8])
         {
             guard let certificate = ASN1Parser(data: derData).parseObject() as? ASN1Sequence else { return nil }
             self.init(asn1sequence: certificate)
             self.data = derData
         }
         
-        public init?(derData : Data) {
+        public convenience init?(derData : Data) {
             self.init(derData: derData.UInt8Array())
         }
         
@@ -40,6 +40,7 @@ extension X509 {
             
             guard let certList = TBSCertList(asn1Sequence: asn1TBSCertList) else { return nil }
             self.tbsCertList = certList
+            self.tbsCertList.revokedCertificates?.forEach({ print($0.description) })
             
             self.signatureAlgorithm = signatureAlgorithm
             self.signatureValue = signature
@@ -47,18 +48,22 @@ extension X509 {
             self.data = []
         }
         
-        public struct TBSCertList {
+        public class TBSCertList {
             public var version: CertificateVersion?
             public var signature: AlgorithmIdentifier
             public var issuer: Name
             public var thisUpdate: Time
             public var nextUpdate: Time?
             
+            public var DEREncodedCertificate: [UInt8]?
+            
             /* When there are no revoked certificates, the revoked certificates list MUST be absent. */
             public var revokedCertificates: [RevokedCertificate]?
             
             init?(asn1Sequence sequence: ASN1Sequence)
             {
+                DEREncodedCertificate = sequence.underlyingData
+                
                 var offset = 0
                 if let asn1tbsCertVersion = sequence.objects[0] as? ASN1Integer {
                     if let version = CertificateVersion(rawValue:Int(asn1tbsCertVersion.value[0])),
@@ -94,29 +99,22 @@ extension X509 {
         }
         
         public struct RevokedCertificate {
-            public var userCertificate: BigInt
-            public var revocationDate: Time
+            public var userCertificate: String
+            public var revocationDate: String
             
             init?(asn1sequence: ASN1Sequence)
             {
                 guard let asn1userCertificate   = asn1sequence.objects[0] as? ASN1Integer,
-                      let asn1revocationDate    = asn1sequence.objects[1] as? ASN1Time,
-                      let revocationDate        = Time(time: asn1revocationDate)
+                      let asn1revocationDate    = asn1sequence.objects[1] as? ASN1Time
                 else { return nil }
                 
-                self.userCertificate = BigInt(bigEndianParts: asn1userCertificate.value)
-                self.revocationDate = revocationDate
+                self.userCertificate = String(BigInt(bigEndianParts: asn1userCertificate.value))
+                self.revocationDate = asn1revocationDate.string
             }
             
             public var description: String {
-                switch revocationDate {
-                case .utcTime(let string):
-                    return string + ": \(userCertificate)"
-                case .generalizedTime(let string):
-                    return string + ": \(userCertificate)"
-                }                
+                revocationDate + ": " + userCertificate
             }
         }
-        
     }
 }

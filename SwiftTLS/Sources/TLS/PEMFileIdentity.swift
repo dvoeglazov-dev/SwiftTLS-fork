@@ -52,7 +52,7 @@ public class PEMFileIdentity
         for (section, object) in ASN1Parser.sectionsFromPEMFile(certificateFile) {
             switch section {
             case "CERTIFICATE":
-                if let certificate = X509.Certificate(derData: object.underlyingData!) {
+                if let certificate = X509.Certificate(derDataSequence: object.underlyingData!) {
                     certificateChain.append(certificate)
                 }
             default:

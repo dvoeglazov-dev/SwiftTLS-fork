@@ -4,3 +4,4 @@ xcbaselines
 *.xccheckout
 .build
 .swiftpm
+timeline.xctimeline
